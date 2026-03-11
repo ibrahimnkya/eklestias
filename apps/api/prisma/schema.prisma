@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String           @id @default(uuid())
+  name      String
+  type      OrganizationType
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  branches  Branch[]
+  members   Member[]
+  projects  Project[]
+  roles     Role[]
+  users     User[]
+}
+
+model Branch {
+  id             String       @id @default(uuid())
+  organizationId String
+  name           String
+  address        String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  attendance     Attendance[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  members        Member[]
+  offerings      Offering[]
+  pledges        Pledge[]
+  projects       Project[]
+  tithes         Tithe[]
+  users          User[]
+}
+
+model Role {
+  id             String       @id @default(uuid())
+  organizationId String
+  name           String
+  level          Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  users          User[]
+}
+
+model User {
+  id                String       @id @default(uuid())
+  organizationId    String
+  branchId          String?
+  roleId            String
+  email             String       @unique
+  password          String
+  firstName         String
+  lastName          String
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  registeredMembers Member[]     @relation("RegisteredBy")
+  branch            Branch?      @relation(fields: [branchId], references: [id])
+  organization      Organization @relation(fields: [organizationId], references: [id])
+  role              Role         @relation(fields: [roleId], references: [id])
+}
+
+model Department {
+  id             String   @id @default(uuid())
+  organizationId String
+  name           String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  members        Member[]
+}
+
+model Member {
+  id                   String                @id @default(uuid())
+  organizationId       String
+  branchId             String
+  departmentId         String?
+  registeredById       String?
+  firstName            String
+  lastName             String
+  phone                String?
+  gender               String?
+  address              String?
+  maritalStatus        String?
+  occupation           String?
+  baptismStatus        Boolean               @default(false)
+  emergencyContact     String?
+  photoUrl             String?
+  status               MemberStatus          @default(VISITOR)
+  joinDate             DateTime              @default(now())
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  deletedAt            DateTime?
+  attendance           Attendance[]
+  branch               Branch                @relation(fields: [branchId], references: [id])
+  department           Department?           @relation(fields: [departmentId], references: [id])
+  organization         Organization          @relation(fields: [organizationId], references: [id])
+  registeredBy         User?                 @relation("RegisteredBy", fields: [registeredById], references: [id])
+  pledges              Pledge[]
+  projectContributions ProjectContribution[]
+  tithes               Tithe[]
+}
+
+model Attendance {
+  id          String   @id @default(uuid())
+  branchId    String
+  memberId    String
+  date        DateTime @db.Date
+  serviceType String
+  createdAt   DateTime @default(now())
+  branch      Branch   @relation(fields: [branchId], references: [id])
+  member      Member   @relation(fields: [memberId], references: [id])
+}
+
+model Tithe {
+  id            String   @id @default(uuid())
+  branchId      String
+  memberId      String
+  amount        Float
+  date          DateTime @default(now())
+  paymentMethod String
+  reference     String?
+  createdAt     DateTime @default(now())
+  branch        Branch   @relation(fields: [branchId], references: [id])
+  member        Member   @relation(fields: [memberId], references: [id])
+}
+
+model Offering {
+  id        String   @id @default(uuid())
+  branchId  String
+  amount    Float
+  date      DateTime @default(now())
+  type      String
+  createdAt DateTime @default(now())
+  branch    Branch   @relation(fields: [branchId], references: [id])
+}
+
+model Pledge {
+  id           String          @id @default(uuid())
+  branchId     String
+  memberId     String
+  campaignName String
+  targetAmount Float
+  totalPaid    Float           @default(0)
+  dueDate      DateTime?
+  status       String          @default("PENDING")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  branch       Branch          @relation(fields: [branchId], references: [id])
+  member       Member          @relation(fields: [memberId], references: [id])
+  payments     PledgePayment[]
+}
+
+model PledgePayment {
+  id            String   @id @default(uuid())
+  pledgeId      String
+  amount        Float
+  date          DateTime @default(now())
+  paymentMethod String
+  reference     String?
+  createdAt     DateTime @default(now())
+  pledge        Pledge   @relation(fields: [pledgeId], references: [id])
+}
+
+model Project {
+  id             String                @id @default(uuid())
+  organizationId String
+  branchId       String?
+  name           String
+  description    String?
+  budget         Float
+  managerId      String?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  branch         Branch?               @relation(fields: [branchId], references: [id])
+  organization   Organization          @relation(fields: [organizationId], references: [id])
+  contributions  ProjectContribution[]
+  expenses       ProjectExpense[]
+}
+
+model ProjectContribution {
+  id            String   @id @default(uuid())
+  projectId     String
+  memberId      String?
+  amount        Float
+  date          DateTime @default(now())
+  paymentMethod String
+  reference     String?
+  createdAt     DateTime @default(now())
+  member        Member?  @relation(fields: [memberId], references: [id])
+  project       Project  @relation(fields: [projectId], references: [id])
+}
+
+model ProjectExpense {
+  id           String   @id @default(uuid())
+  projectId    String
+  amount       Float
+  description  String
+  date         DateTime @default(now())
+  recordedById String?
+  createdAt    DateTime @default(now())
+  project      Project  @relation(fields: [projectId], references: [id])
+}
+
+model Notification {
+  id             String   @id @default(uuid())
+  organizationId String
+  type           String
+  recipient      String
+  message        String
+  status         String
+  createdAt      DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+enum OrganizationType {
+  DIOCESE
+  MINISTRY
+  CHURCH_NETWORK
+  INDEPENDENT_CHURCH
+}
+
+enum MemberStatus {
+  VISITOR
+  NEW_CONVERT
+  ACTIVE_MEMBER
+  INACTIVE
+}

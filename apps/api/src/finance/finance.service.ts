@@ -1,0 +1,114 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateTitheDto, CreateOfferingDto, CreatePledgeDto, CreatePledgePaymentDto } from './dto/finance-dtos';
+
+@Injectable()
+export class FinanceService {
+    constructor(private prisma: PrismaService) { }
+
+    createTithe(createTitheDto: CreateTitheDto) {
+        return this.prisma.tithe.create({ data: createTitheDto });
+    }
+
+    createOffering(createOfferingDto: CreateOfferingDto) {
+        return this.prisma.offering.create({ data: createOfferingDto });
+    }
+
+    createPledge(createPledgeDto: CreatePledgeDto) {
+        return this.prisma.pledge.create({
+            data: {
+                ...createPledgeDto,
+                dueDate: createPledgeDto.dueDate ? new Date(createPledgeDto.dueDate) : null,
+            },
+        });
+    }
+
+    async addPledgePayment(pledgeId: string, paymentDto: CreatePledgePaymentDto) {
+        const payment = await this.prisma.pledgePayment.create({
+            data: { ...paymentDto, pledgeId }
+        });
+
+        const pledge = await this.prisma.pledge.findUnique({ where: { id: pledgeId } });
+        if (!pledge) throw new Error('Pledge not found');
+        const newTotal = pledge.totalPaid + paymentDto.amount;
+        const status = newTotal >= pledge.targetAmount ? 'COMPLETED' : 'PENDING';
+
+        await this.prisma.pledge.update({
+            where: { id: pledgeId },
+            data: { totalPaid: newTotal, status }
+        });
+
+        return payment;
+    }
+
+    async getBranchReport(branchId: string) {
+        const tithes = await this.prisma.tithe.aggregate({
+            where: { branchId },
+            _sum: { amount: true },
+        });
+        const offerings = await this.prisma.offering.aggregate({
+            where: { branchId },
+            _sum: { amount: true },
+        });
+        const pledges = await this.prisma.pledgePayment.aggregate({
+            where: { pledge: { branchId } },
+            _sum: { amount: true },
+        });
+
+        return {
+            totalTithes: tithes._sum.amount || 0,
+            totalOfferings: offerings._sum.amount || 0,
+            totalPledgePayments: pledges._sum.amount || 0,
+            totalRevenue: (tithes._sum.amount || 0) + (offerings._sum.amount || 0) + (pledges._sum.amount || 0),
+        };
+    }
+
+    async getSummary(query: any) {
+        const { organizationId, branchId, from, to } = query;
+        const where: any = { branch: { organizationId } };
+        if (branchId) where.branchId = branchId;
+        if (from || to) {
+            where.date = {};
+            if (from) where.date.gte = new Date(from);
+            if (to) where.date.lte = new Date(to);
+        }
+
+        const [tithes, offerings, pledges] = await Promise.all([
+            this.prisma.tithe.aggregate({ where, _sum: { amount: true } }),
+            this.prisma.offering.aggregate({ where, _sum: { amount: true } }),
+            this.prisma.pledgePayment.aggregate({ where: { ...where, pledge: where.branch }, _sum: { amount: true } }),
+        ]);
+
+        return {
+            totalTithes: tithes._sum.amount || 0,
+            totalOfferings: offerings._sum.amount || 0,
+            totalPledges: pledges._sum.amount || 0,
+            totalRevenue: (tithes._sum.amount || 0) + (offerings._sum.amount || 0) + (pledges._sum.amount || 0),
+        };
+    }
+
+    async getRecords(query: any) {
+        const { organizationId, branchId, type, from, to } = query;
+        const where: any = { branch: { organizationId } };
+        if (branchId) where.branchId = branchId;
+        if (from || to) {
+            where.date = {};
+            if (from) where.date.gte = new Date(from);
+            if (to) where.date.lte = new Date(to);
+        }
+
+        if (type === 'tithes') return this.prisma.tithe.findMany({ where, include: { member: true, branch: true }, orderBy: { date: 'desc' } });
+        if (type === 'offerings') return this.prisma.offering.findMany({ where, include: { branch: true }, orderBy: { date: 'desc' } });
+        if (type === 'pledges') return this.prisma.pledgePayment.findMany({
+            where: { ...where, pledge: where.branch },
+            include: { pledge: { include: { member: true } } },
+            orderBy: { date: 'desc' }
+        });
+        return [];
+    }
+
+    async getReport(query: any) {
+        // Simple aggregate for now
+        return this.getSummary(query);
+    }
+}

@@ -1,0 +1,38 @@
+name: EklesiaSuite CI
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint Check
+        run: pnpm turbo run lint
+
+      - name: Generate Prisma Client
+        run: cd apps/api && pnpm prisma generate
+
+      - name: Run Tests
+        run: pnpm turbo run test
+
+      - name: Build Turbo
+        run: pnpm turbo run build

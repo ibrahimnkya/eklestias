@@ -1,0 +1,41 @@
+import { Injectable } from '@nestjs/common';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class RolesService {
+    constructor(private prisma: PrismaService) { }
+
+    create(createRoleDto: CreateRoleDto) {
+        return this.prisma.role.create({
+            data: createRoleDto,
+        });
+    }
+
+    findAll(organizationId: string) {
+        return this.prisma.role.findMany({
+            where: { organizationId },
+            orderBy: { level: 'asc' },
+        });
+    }
+
+    findOne(id: string) {
+        return this.prisma.role.findUnique({
+            where: { id },
+        });
+    }
+
+    update(id: string, updateRoleDto: UpdateRoleDto) {
+        return this.prisma.role.update({
+            where: { id },
+            data: updateRoleDto,
+        });
+    }
+
+    remove(id: string) {
+        return this.prisma.role.delete({
+            where: { id },
+        });
+    }
+}

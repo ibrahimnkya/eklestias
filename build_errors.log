@@ -1,0 +1,104 @@
+• turbo 2.8.12
+• Packages in scope: api
+• Running build in 1 packages
+• Remote caching disabled
+api:build: cache miss, executing d191615b16dafb72
+api:build: 
+api:build: > api@0.0.1 build /Users/mac/Desktop/ibrA/Solutions/eklestias/apps/api
+api:build: > nest build
+api:build: 
+api:build: [96mprisma/seed.ts[0m:[93m11[0m:[93m9[0m - [91merror[0m[90m TS2322: [0mType '{ name: string; }' is not assignable to type 'OrganizationWhereUniqueInput'.
+api:build:   Type '{ name: string; }' is not assignable to type '{ id: string; } & { id?: string | undefined; AND?: OrganizationWhereInput | OrganizationWhereInput[] | undefined; OR?: OrganizationWhereInput[] | undefined; ... 9 more ...; projects?: ProjectListRelationFilter | undefined; }'.
+api:build:     Property 'id' is missing in type '{ name: string; }' but required in type '{ id: string; }'.
+api:build: 
+api:build: [7m11[0m         where: { name: 'EklesiaSuite Demo Church' },
+api:build: [7m  [0m [91m        ~~~~~[0m
+api:build: 
+api:build:   [96m../../node_modules/.pnpm/@prisma+client@7.4.2_prisma@7.4.2_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@1_o3rr5ylvn7bhn3m7pqh7z67pzq/node_modules/.prisma/client/index.d.ts[0m:[93m21490[0m:[93m5[0m
+api:build:     [7m21490[0m     id?: string
+api:build:     [7m     [0m [96m    ~~[0m
+api:build:     'id' is declared here.
+api:build:   [96m../../node_modules/.pnpm/@prisma+client@7.4.2_prisma@7.4.2_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@1_o3rr5ylvn7bhn3m7pqh7z67pzq/node_modules/.prisma/client/index.d.ts[0m:[93m3636[0m:[93m5[0m
+api:build:     [7m3636[0m     where: OrganizationWhereUniqueInput
+api:build:     [7m    [0m [96m    ~~~~~[0m
+api:build:     The expected type comes from property 'where' which is declared here on type '{ select?: OrganizationSelect<DefaultArgs> | null | undefined; omit?: OrganizationOmit<DefaultArgs> | null | undefined; include?: OrganizationInclude<...> | ... 1 more ... | undefined; where: OrganizationWhereUniqueInput; create: (Without<...> & OrganizationUncheckedCreateInput) | (Without<...> & OrganizationCreateI...'
+api:build: [96mprisma/seed.ts[0m:[93m15[0m:[93m13[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'description' does not exist in type '(Without<OrganizationCreateInput, OrganizationUncheckedCreateInput> & OrganizationUncheckedCreateInput) | (Without<...> & OrganizationCreateInput)'.
+api:build: 
+api:build: [7m15[0m             description: 'Main demo organization for EklesiaSuite',
+api:build: [7m  [0m [91m            ~~~~~~~~~~~[0m
+api:build: 
+api:build:   [96m../../node_modules/.pnpm/@prisma+client@7.4.2_prisma@7.4.2_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@1_o3rr5ylvn7bhn3m7pqh7z67pzq/node_modules/.prisma/client/index.d.ts[0m:[93m3640[0m:[93m5[0m
+api:build:     [7m3640[0m     create: XOR<OrganizationCreateInput, OrganizationUncheckedCreateInput>
+api:build:     [7m    [0m [96m    ~~~~~~[0m
+api:build:     The expected type comes from property 'create' which is declared here on type '{ select?: OrganizationSelect<DefaultArgs> | null | undefined; omit?: OrganizationOmit<DefaultArgs> | null | undefined; include?: OrganizationInclude<...> | ... 1 more ... | undefined; where: OrganizationWhereUniqueInput; create: (Without<...> & OrganizationUncheckedCreateInput) | (Without<...> & OrganizationCreateI...'
+api:build: [96mprisma/seed.ts[0m:[93m35[0m:[93m18[0m - [91merror[0m[90m TS2561: [0mObject literal may only specify known properties, but 'name_organizationId' does not exist in type 'RoleWhereUniqueInput'. Did you mean to write 'organizationId'?
+api:build: 
+api:build: [7m35[0m         where: { name_organizationId: { name: 'Super Admin', organizationId: org.id } },
+api:build: [7m  [0m [91m                 ~~~~~~~~~~~~~~~~~~~[0m
+api:build: 
+api:build:   [96m../../node_modules/.pnpm/@prisma+client@7.4.2_prisma@7.4.2_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@1_o3rr5ylvn7bhn3m7pqh7z67pzq/node_modules/.prisma/client/index.d.ts[0m:[93m6136[0m:[93m5[0m
+api:build:     [7m6136[0m     where: RoleWhereUniqueInput
+api:build:     [7m    [0m [96m    ~~~~~[0m
+api:build:     The expected type comes from property 'where' which is declared here on type '{ select?: RoleSelect<DefaultArgs> | null | undefined; omit?: RoleOmit<DefaultArgs> | null | undefined; include?: RoleInclude<DefaultArgs> | null | undefined; where: RoleWhereUniqueInput; create: (Without<...> & RoleUncheckedCreateInput) | (Without<...> & RoleCreateInput); update: (Without<...> & RoleUncheckedUpdate...'
+api:build: [96mprisma/seed.ts[0m:[93m54[0m:[93m13[0m - [91merror[0m[90m TS2561: [0mObject literal may only specify known properties, but 'passwordHash' does not exist in type 'Without<UserCreateInput, UserUncheckedCreateInput> & UserUncheckedCreateInput'. Did you mean to write 'password'?
+api:build: 
+api:build: [7m54[0m             passwordHash: hashedPassword,
+api:build: [7m  [0m [91m            ~~~~~~~~~~~~[0m
+api:build: 
+api:build:   [96m../../node_modules/.pnpm/@prisma+client@7.4.2_prisma@7.4.2_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@1_o3rr5ylvn7bhn3m7pqh7z67pzq/node_modules/.prisma/client/index.d.ts[0m:[93m7309[0m:[93m5[0m
+api:build:     [7m7309[0m     create: XOR<UserCreateInput, UserUncheckedCreateInput>
+api:build:     [7m    [0m [96m    ~~~~~~[0m
+api:build:     The expected type comes from property 'create' which is declared here on type '{ select?: UserSelect<DefaultArgs> | null | undefined; omit?: UserOmit<DefaultArgs> | null | undefined; include?: UserInclude<DefaultArgs> | null | undefined; where: UserWhereUniqueInput; create: (Without<...> & UserUncheckedCreateInput) | (Without<...> & UserCreateInput); update: (Without<...> & UserUncheckedUpdate...'
+api:build: [96msrc/audit-logs/audit-logs.service.ts[0m:[93m12[0m:[93m13[0m - [91merror[0m[90m TS2322: [0mType '{ user: { select: { id: true; email: true; firstName: true; lastName: true; }; }; }' is not assignable to type 'never'.
+api:build: 
+api:build: [7m12[0m             include: {
+api:build: [7m  [0m [91m            ~~~~~~~[0m
+api:build: [96msrc/communications/communications.controller.ts[0m:[93m15[0m:[93m38[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+api:build: 
+api:build: [7m15[0m     sendSms(@Body() dto: SendSmsDto, @Request() req) {
+api:build: [7m  [0m [91m                                     ~~~~~~~~~~~~~~[0m
+api:build: [96msrc/communications/communications.controller.ts[0m:[93m21[0m:[93m48[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+api:build: 
+api:build: [7m21[0m     sendWhatsapp(@Body() dto: SendWhatsappDto, @Request() req) {
+api:build: [7m  [0m [91m                                               ~~~~~~~~~~~~~~[0m
+api:build: [96msrc/finance/finance.service.ts[0m:[93m32[0m:[93m26[0m - [91merror[0m[90m TS18047: [0m'pledge' is possibly 'null'.
+api:build: 
+api:build: [7m32[0m         const newTotal = pledge.totalPaid + paymentDto.amount;
+api:build: [7m  [0m [91m                         ~~~~~~[0m
+api:build: [96msrc/finance/finance.service.ts[0m:[93m33[0m:[93m36[0m - [91merror[0m[90m TS18047: [0m'pledge' is possibly 'null'.
+api:build: 
+api:build: [7m33[0m         const status = newTotal >= pledge.targetAmount ? 'COMPLETED' : 'PENDING';
+api:build: [7m  [0m [91m                                   ~~~~~~[0m
+api:build: [96msrc/members/members.controller.ts[0m:[93m16[0m:[93m54[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+api:build: 
+api:build: [7m16[0m     create(@Body() createMemberDto: CreateMemberDto, @Request() req) {
+api:build: [7m  [0m [91m                                                     ~~~~~~~~~~~~~~[0m
+api:build: [96msrc/projects/projects.controller.ts[0m:[93m15[0m:[93m56[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+api:build: 
+api:build: [7m15[0m     create(@Body() createProjectDto: CreateProjectDto, @Request() req) {
+api:build: [7m  [0m [91m                                                       ~~~~~~~~~~~~~~[0m
+api:build: [96msrc/projects/projects.controller.ts[0m:[93m37[0m:[93m76[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+api:build: 
+api:build: [7m37[0m     addExpense(@Param('id') id: string, @Body() dto: AddProjectExpenseDto, @Request() req) {
+api:build: [7m  [0m [91m                                                                           ~~~~~~~~~~~~~~[0m
+api:build: [96msrc/projects/projects.service.ts[0m:[93m59[0m:[93m21[0m - [91merror[0m[90m TS18047: [0m'project' is possibly 'null'.
+api:build: 
+api:build: [7m59[0m             budget: project.budget,
+api:build: [7m  [0m [91m                    ~~~~~~~[0m
+api:build: [96msrc/projects/projects.service.ts[0m:[93m63[0m:[93m55[0m - [91merror[0m[90m TS18047: [0m'project' is possibly 'null'.
+api:build: 
+api:build: [7m63[0m             progressPercentage: (totalContributions / project.budget) * 100,
+api:build: [7m  [0m [91m                                                      ~~~~~~~[0m
+api:build: 
+api:build: Found 14 error(s).
+api:build: 
+api:build:  ELIFECYCLE  Command failed with exit code 1.
+api:build: ERROR: command finished with error: command (/Users/mac/Desktop/ibrA/Solutions/eklestias/apps/api) /Users/mac/Library/pnpm/.tools/pnpm/9.1.0/bin/pnpm run build exited (1)
+api#build: command (/Users/mac/Desktop/ibrA/Solutions/eklestias/apps/api) /Users/mac/Library/pnpm/.tools/pnpm/9.1.0/bin/pnpm run build exited (1)
+
+ Tasks:    0 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    4.64s 
+Failed:    api#build
+
+ ERROR  run failed: command  exited (1)

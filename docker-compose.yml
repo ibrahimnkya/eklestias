@@ -1,0 +1,58 @@
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: eklesia_db
+    environment:
+      POSTGRES_USER: eklesia
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: eklesia_suite
+    ports:
+      - "5432:5432"
+    volumes:
+      - eklesia_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eklesia"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: eklesia_redis
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: eklesia_api
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://eklesia:password123@postgres:5432/eklesia_suite?schema=public
+      - JWT_SECRET=super_secret_jwt_key_123!
+      - REDIS_URL=redis://redis:6379
+      - PORT=3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    command: sh -c "npx prisma studio --port 5555 & npm run start:prod"
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: eklesia_web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    depends_on:
+      - api
+
+volumes:
+  eklesia_pgdata:

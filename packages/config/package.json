@@ -1,0 +1,8 @@
+{
+    "name": "@eklesia/config",
+    "version": "1.0.0",
+    "main": "./index.js",
+    "scripts": {
+        "dev": "echo '@eklesia/config dev'"
+    }
+}
